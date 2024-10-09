@@ -3,13 +3,8 @@ const mysql = require('mysql2');
 
 const app = express();
 
-// Connexion à la base de données
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123456',
-    database: 'test_backend'
-});
+const myArticles = require('./models/Articles');
+myArticles.sync();
 
 // Création d'un endpoint
 app.get('/api/data', (req, res) => {
