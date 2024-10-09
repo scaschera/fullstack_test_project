@@ -15,7 +15,8 @@ const syncTable = () => {
 
 }
 
-// Création d'un endpoint
+/******************************gestion des endpoint (deb ) */
+
 app.post('/insert-row', (req, res) => {
     //Code pour créer un nouvel article
     myArticles.create({
@@ -26,6 +27,26 @@ app.post('/insert-row', (req, res) => {
         return;
     })
 });
+
+app.post('/delete-row', (req, res) => {
+    //Code pour créer un nouvel article
+    myArticles.destroy({
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Article supprimé avec succès' });
+    })
+});
+
+app.get('/get-rows', (req, res) => {
+    myArticles.findAll().then((data) => {
+        res.json(data);
+        return;
+    })
+});
+
+/******************************gestion des endpoint (deb ) */
 
 syncTable();
 app.listen(3000, () => {
