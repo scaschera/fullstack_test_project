@@ -46,6 +46,32 @@ app.get('/get-rows', (req, res) => {
     })
 });
 
+app.post('/get-row', (req, res) => {
+    myArticles.findOne({
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json(data);
+        return;
+    })
+});
+
+app.post('/update-row', (req, res) => {
+    //Code pour mise à jour un article
+    myArticles.update({
+        title: req.body.title,
+        content: req.body.content
+    }, {
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Article mise à jour !' });
+        return;
+    })
+});
+
 /******************************gestion des endpoint (deb ) */
 
 syncTable();
