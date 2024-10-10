@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
+const { Sequelize, Op } = require('sequelize');
 
 const app = express();
 app.use(morgan('combined'));
@@ -39,11 +40,21 @@ app.post('/delete-row', (req, res) => {
     })
 });
 
-app.get('/get-rows', (req, res) => {
-    myArticles.findAll().then((data) => {
+app.post('/get-rows', (req, res) => {
+
+    myArticles.findAll({
+        where: {
+            title: {
+                [Op.like]: `%${req.body.q}%`
+
+            }
+        }
+    }).then((data) => {
         res.json(data);
         return;
     })
+
+
 });
 
 app.post('/get-row', (req, res) => {
