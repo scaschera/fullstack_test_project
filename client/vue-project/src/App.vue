@@ -13,12 +13,25 @@
           <li class="nav-item">
             <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'articles' }">Articles</RouterLink>
           </li>
-          
         </ul>
+        <!-- Dropdown de login -->
+        <template v-if="isLogged">
+          <span class="badge bg-primary fs-6" style="margin-right:10px">
+            <i class="fas fa-user"></i>
+            {{ user.nom }} {{ user.prenom }}
+            <i class="fa-solid fa-right-from-bracket" style="color:red;padding-left: 10px;"></i>
+          </span>
+        </template>
+        <template v-if="!isLogged">
+          <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'login' }" style="margin-right:10px">Se connecter</RouterLink>
+        </template>
         <form class="d-flex">
-          <input class="form-control me-2" type="search" v-model="q" placeholder="Rechercher un article" aria-label="Search">
-          <button class="btn btn-outline-success" type="button"  @click="search_article">Rechercher</button>
+          <div class="input-group mb-1 mt-1">
+            <input class="form-control" type="search" v-model="q" @keyup="search_article" placeholder="Rechercher un article" aria-label="Search">
+            <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+          </div>
         </form>
+        
       </div>
     </div>
   </nav>
@@ -28,19 +41,33 @@
 
 <script setup>
 
-  import { ref } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
   import { RouterLink, RouterView, useRouter } from 'vue-router'
   import { useStore } from '@/stores/store';
 
   const q=ref('');
 
   const router = useRouter();
+  const user=ref({
+      nom: '',
+      prenom: '',
+      email: ''
+    });
+
+  const isLogged=ref(false);
 
   const search_article = () => {
     useStore().searchArticle(q.value);
     router.push({ name: 'articles' });
-    q.value = '';
   }
+
+  watch(() => useStore().user, (newVal, oldVal) => {
+    user.value = newVal;
+  });
+
+  watch(() => useStore().isLogged, (newVal, oldVal) => {
+    isLogged.value = newVal;
+  });
 
 </script>
 
