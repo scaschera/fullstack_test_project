@@ -89,6 +89,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useStore } from '../stores/store';
 import axios from 'axios';
+import { useRouter } from 'vue-router'
 
 const titre = ref('');
 const content = ref('');
@@ -104,6 +105,7 @@ const display_form_add = ref(false);
 const display_form_update = ref(false);
 
 const myStore = useStore();
+const router = useRouter();
 
 const insert_new_row = async () => {
   try {
@@ -190,8 +192,13 @@ watch(() => myStore.articlesearch, (newVal, oldVal) => {
 });
 
 onMounted(() => {
-
-  get_rows(myStore.articlesearch);
+  if(myStore.getToken()!="")
+  {
+    get_rows(myStore.articlesearch);
+  }
+  else{
+    router.push({ name: 'login' });
+  }
 
 });
 </script>
