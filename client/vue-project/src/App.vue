@@ -19,7 +19,7 @@
           <span class="badge bg-primary fs-6" style="margin-right:10px">
             <i class="fas fa-user"></i>
             {{ user.nom }} {{ user.prenom }}
-            <i class="fa-solid fa-right-from-bracket" style="color:red;padding-left: 10px;"></i>
+            <i class="fa-solid fa-right-from-bracket" style="color:red;padding-left: 10px;cursor: pointer;" @click="useStore().logout"></i>
           </span>
         </template>
         <template v-if="!isLogged">
@@ -41,7 +41,7 @@
 
 <script setup>
 
-  import { onMounted, ref, watch } from 'vue';
+  import { ref, watch } from 'vue';
   import { RouterLink, RouterView, useRouter } from 'vue-router'
   import { useStore } from '@/stores/store';
 

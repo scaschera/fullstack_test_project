@@ -27,6 +27,7 @@ export const useStore = defineStore('myStore', () => {
             token: ''
         }
         isLogin.value = false;
+        router.push({ name: 'login' });
     }
 
     function login(userRecup) {
