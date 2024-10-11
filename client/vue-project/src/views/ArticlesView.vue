@@ -152,6 +152,10 @@ const update_row = async () => {
       id: id_update.value,
       title: titre_update.value,
       content: content_update.value
+    }, {
+      headers: {
+        'Authorization': `Bearer ${myStore.getToken()}`
+      }
     });
     msg_err_update.value = response.data.message;
     display_form_update.value = false;
@@ -168,7 +172,11 @@ const delete_article = async (id) => {
 
   if (confirm('Etes-vous sûr de vouloir supprimer cet article ?')) {
     try {
-      const response = await axios.post('http://localhost:3000/delete-row', { id: id });
+      const response = await axios.post('http://localhost:3000/delete-row', { id: id }, {
+        headers: {
+          'Authorization': `Bearer ${myStore.getToken()}`
+        }
+      });
       get_rows('');
     }
     catch (error) {

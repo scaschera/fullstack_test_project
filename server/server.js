@@ -11,10 +11,24 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const myArticles = require('./models/Articles');
+const myUsers = require('./models/Users');
 
 const syncTable = () => {
     myArticles.sync();
+    myUsers.sync();
 
+    //creation de l'utilisateur admin si il n'exsite pas
+    myUsers.findOne({ where: { email: 'admin@example.com' } }).then(user => {
+        if (!user) {
+            myUsers.create({
+                nom: 'admin',
+                prenom: 'admin',
+                email: 'admin@example.com',
+                password: 'password',
+                droit: 'admin',
+            });
+        }
+    });
 }
 
 function generateToken(payload) {
@@ -49,22 +63,31 @@ function verifyTokenMiddleware(req, res, next) {
 app.post('/login', (req, res) => {
     // Vérification des informations d'identification
     const { email, password } = req.body;
-    if (email === 'admin@example.com' && password === 'password') {
+
+    myUsers.findOne({ where: { email } }).then(user => {
+        if (!user) {
+            res.status(401).json({ error: 'Mauvaise combinaison email et mot de passe' });
+            return;
+        }
+        if (user.password !== password) {
+            res.status(401).json({ error: 'Mauvaise combinaison email et mot de passe' });
+            return;
+        }
         const payload = { email };
         const token = generateToken(payload);
         res.json(
             {
                 message: "Connexion réussie",
                 user: {
-                    nom: "admin",
-                    prenom: "admin",
-                    email: "admin@example.com",
+                    nom: user.nom,
+                    prenom: user.prenom,
+                    email: user.email,
+                    droit: user.droit,
                     token: token
                 }
             });
-    } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-    }
+    });
+
 });
 
 app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
@@ -80,7 +103,7 @@ app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
 
 
 
-app.post('/delete-row', (req, res) => {
+app.post('/delete-row', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
     myArticles.destroy({
         where: {
@@ -119,7 +142,7 @@ app.post('/get-row', (req, res) => {
     })
 });
 
-app.post('/update-row', (req, res) => {
+app.post('/update-row', verifyTokenMiddleware, (req, res) => {
     //Code pour mise à jour un article
     myArticles.update({
         title: req.body.title,

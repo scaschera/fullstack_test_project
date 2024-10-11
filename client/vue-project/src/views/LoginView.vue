@@ -63,7 +63,7 @@
       }
       catch(err)
       {
-        msg_err.value = err.response.data.message;
+        msg_err.value = err.response.data.error;
       }
 
     }
