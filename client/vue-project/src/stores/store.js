@@ -8,6 +8,7 @@ export const useStore = defineStore('myStore', () => {
         nom: '',
         prenom: '',
         email: '',
+        droit: '',
         token: ''
     })
 
@@ -24,6 +25,7 @@ export const useStore = defineStore('myStore', () => {
             nom: '',
             prenom: '',
             email: '',
+            droit: '',
             token: ''
         }
         isLogin.value = false;
@@ -36,6 +38,7 @@ export const useStore = defineStore('myStore', () => {
             nom: userRecup.nom,
             prenom: userRecup.prenom,
             email: userRecup.email,
+            droit: userRecup.droit,
             token: userRecup.token
         }
         isLogin.value = true;
