@@ -110,6 +110,10 @@ const insert_new_row = async () => {
     const response = await axios.post('http://localhost:3000/insert-row', {
       title: titre.value,
       content: content.value
+    }, {
+      headers: {
+        'Authorization': `Bearer ${myStore.getToken()}`
+      }
     });
     msg.value = response.data.message;
 

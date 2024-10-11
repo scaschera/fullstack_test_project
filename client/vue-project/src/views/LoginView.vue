@@ -33,13 +33,16 @@
 </style>
 <script setup>
 
-  import { ref, watch } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
   import axios from 'axios';
-  
+  import { useStore } from '../stores/store';
+  import { useRouter } from 'vue-router'
 
   const mail=ref('');
   const pass=ref('');
   const msg_err=ref('');
+  const myStore = useStore();
+  const router = useRouter();
 
   const connect = async () => {
     
@@ -51,9 +54,11 @@
           password: pass.value  
         });
         msg_err.value = response.data.message;
-        if(response.data.message=="Connexion reussie")
+        if(response.data.message=="Connexion réussie")
         {
-          window.location.href = "/";
+          //window.location.href = "/";
+          myStore.login(response.data.user);
+          
         }
       }
       catch(err)
@@ -89,6 +94,13 @@
     else
     {
       document.getElementById('pwd_input').classList.remove('is-invalid');
+    }
+  });
+
+  onMounted(() => {
+    if(myStore.getToken()!="")
+    {
+      router.push({ name: 'articles' });
     }
   });
 

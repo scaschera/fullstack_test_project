@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 
 export const useStore = defineStore('myStore', () => {
 
@@ -10,6 +11,7 @@ export const useStore = defineStore('myStore', () => {
         token: ''
     })
 
+    const router = useRouter();
     const isLogin = ref(false);
     const articlesearch = ref('')
 
@@ -27,14 +29,24 @@ export const useStore = defineStore('myStore', () => {
         isLogin.value = false;
     }
 
-    function login(user) {
-        user.value = user;
+    function login(userRecup) {
+
+        user.value = {
+            nom: userRecup.nom,
+            prenom: userRecup.prenom,
+            email: userRecup.email,
+            token: userRecup.token
+        }
         isLogin.value = true;
+        router.push({ name: 'articles' });
     }
 
     function setToken(token) {
         user.value.token = token;
     }
+    function getToken() {
+        return user.value.token;
+    }
 
-    return { articlesearch, searchArticle, user, logout, login, setToken, isLogin }
+    return { articlesearch, searchArticle, user, logout, login, setToken, isLogin, getToken }
 })

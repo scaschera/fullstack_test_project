@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const { Sequelize, Op } = require('sequelize');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(morgan('combined'));
@@ -16,9 +17,57 @@ const syncTable = () => {
 
 }
 
+function generateToken(payload) {
+    const secretKey = 'votreCléSecrète';
+    const token = jwt.sign(payload, secretKey);
+    return token;
+}
+
+function verifyToken(token) {
+    const secretKey = 'votreCléSecrète';
+    try {
+        const decoded = jwt.verify(token, secretKey);
+        return decoded;
+    } catch (error) {
+        return null;
+    }
+}
+
+function verifyTokenMiddleware(req, res, next) {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = verifyToken(token);
+    if (decoded) {
+        req.user = decoded;
+        next();
+    } else {
+        res.status(401).json({ error: 'Invalid token' });
+    }
+}
+
 /******************************gestion des endpoint (deb ) */
 
-app.post('/insert-row', (req, res) => {
+app.post('/login', (req, res) => {
+    // Vérification des informations d'identification
+    const { email, password } = req.body;
+    if (email === 'admin@example.com' && password === 'password') {
+        const payload = { email };
+        const token = generateToken(payload);
+        res.json(
+            {
+                message: "Connexion réussie",
+                user: {
+                    nom: "admin",
+                    prenom: "admin",
+                    email: "admin@example.com",
+                    token: token
+                }
+            });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
+
+app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
     myArticles.create({
         title: req.body.title,
@@ -28,6 +77,8 @@ app.post('/insert-row', (req, res) => {
         return;
     })
 });
+
+
 
 app.post('/delete-row', (req, res) => {
     //Code pour créer un nouvel article
