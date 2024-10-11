@@ -26,9 +26,9 @@
               <td>{{ row.title }}</td>
               <td>{{ row.content }}</td>
               <td>
-                <button type="button" @click="edit_article(row.id)" class="btn btn-primary"><i
+                <button type="button" @click="edit_article(row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier" class="btn btn-primary"><i
                   class="fa-solid fa-edit"></i></button>&nbsp;
-                <button type="button" @click="delete_article(row.id)" class="btn btn-danger"><i
+                <button type="button" @click="delete_article(row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer" class="btn btn-danger"><i
                     class="fa-solid fa-trash"></i></button>
               </td>
             </tr>
@@ -90,6 +90,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useStore } from '../stores/store';
 import axios from 'axios';
 import { useRouter } from 'vue-router'
+import { Tooltip } from "bootstrap";
 
 const titre = ref('');
 const content = ref('');
@@ -207,6 +208,11 @@ onMounted(() => {
   else{
     router.push({ name: 'login' });
   }
+
+  // Tooltips initialization
+  new Tooltip(document.body, {
+      selector: "[data-bs-toggle='tooltip']",
+  })
 
 });
 </script>

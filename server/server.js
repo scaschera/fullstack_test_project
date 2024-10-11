@@ -131,6 +131,28 @@ app.post('/get-rows', (req, res) => {
 
 });
 
+app.post('/get-users', verifyTokenMiddleware, (req, res) => {
+
+    myUsers.findAll({
+        where: {
+            [Op.or]: [
+                { nom: { [Op.like]: `%${req.body.q}%` } },
+                { prenom: { [Op.like]: `%${req.body.q}%` } },
+                { email: { [Op.like]: `%${req.body.q}%` } }
+            ]
+        }
+    }).then((data) => {
+        const dataToSend = data.map((user) => {
+            const { password, ...userWithoutPassword } = user.dataValues; // Suppression du mot de passe
+            return userWithoutPassword;
+        });
+        res.json(dataToSend);
+        return;
+    })
+
+
+});
+
 app.post('/get-row', (req, res) => {
     myArticles.findOne({
         where: {
