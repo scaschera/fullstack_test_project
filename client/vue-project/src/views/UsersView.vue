@@ -30,8 +30,8 @@
                     <div class="mb-3">
                         <label for="newUserDroit" class="form-label">Droit</label>
                         <select class="form-select" id="newUserDroit" aria-label="newUserDroit" v-model="newUser.droit">
-                            <option value="utilisateur">Utilisateur</option>
-                            <option value="admin">Administrateur</option>
+                            <option value="utilisateur">utilisateur</option>
+                            <option value="admin">admin</option>
                         </select>
                     </div>
                     
@@ -40,6 +40,44 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 <button type="button" class="btn btn-primary" @click="insert_new_user"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Ajouter</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="popupEditUser" tabindex="-1" aria-labelledby="popupEditUser" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupEditUser">Modifier un utilisateur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="updateUserNom" class="form-label required">Nom</label>
+                        <input type="text" class="form-control required" id="updateUserNom" v-model="updateUser.nom">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateUserPrenom" class="form-label required">Prenom</label>
+                        <input type="text" class="form-control required" id="updateUserPrenom" v-model="updateUser.prenom">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateUserEmail" class="form-label required">Adresse mail</label>
+                        <input type="email" class="form-control required" id="updateUserEmail" v-model="updateUser.email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateUserDroit" class="form-label">Droit</label>
+                        <select class="form-select" id="updateUserDroit" aria-label="updateUserDroit" v-model="updateUser.droit">
+                            <option value="utilisateur">utilisateur</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" @click="valid_update_user"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Modifier</button>
             </div>
             </div>
         </div>
@@ -112,6 +150,8 @@
     const myStore = useStore();
     const router = useRouter();
     const popupAddUser = ref(null);
+    const popupEditUser = ref(null);
+
     const newUser = ref({
         nom: '',
         prenom: '',
@@ -119,9 +159,9 @@
         password: '',
         droit: 'utilisateur'
     });
-    const msg_err_add=ref('');
 
     const updateUser = ref({
+        id: '',
         nom: '',
         prenom: '',
         email: '',
@@ -156,6 +196,21 @@
         document.getElementById('newUserEmail').classList.remove('is-invalid');
         document.getElementById('newUserPassword').classList.remove('is-invalid');
         document.getElementById('newUserDroit').classList.remove('is-invalid');
+
+    }
+
+    const edit_user= async (id)=>{
+        
+        const response = await axios.post('http://localhost:3000/get-user', { id: id },
+            {
+                headers: {
+                    'Authorization': `Bearer ${myStore.getToken()}`
+                }
+            }
+        );
+        updateUser.value = response.data;
+        popupEditUser.value=new Modal(document.getElementById("popupEditUser"));
+        popupEditUser.value.show();
 
     }
 

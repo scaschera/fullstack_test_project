@@ -3,15 +3,17 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const { Sequelize, Op } = require('sequelize');
-const jwt = require('jsonwebtoken');
+const { generateToken, verifyTokenMiddleware, cryptMdp } = require('./functions/auth');
 
 const app = express();
+
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cors());
 
 const myArticles = require('./models/Articles');
 const myUsers = require('./models/Users');
+const { sendEmail } = require('./functions/mail');
 
 const syncTable = () => {
     myArticles.sync();
@@ -20,43 +22,32 @@ const syncTable = () => {
     //creation de l'utilisateur admin si il n'exsite pas
     myUsers.findOne({ where: { email: 'admin@example.com' } }).then(user => {
         if (!user) {
+
+            //generation d'un mot de passe
+            let email_admin = 'admin@example.com';
+            let password = Math.random().toString(36).slice(2);
+
             myUsers.create({
                 nom: 'admin',
                 prenom: 'admin',
-                email: 'admin@example.com',
-                password: 'password',
+                email: email_admin,
+                password: cryptMdp(password),
                 droit: 'admin',
             });
+
+            //envoi du mail avec les informations de connexion
+            let from = 'noreply@localhost';
+            let to = email_admin;
+            let subject = 'Vos identifiants de connexion';
+            let text = '';
+            let html = `<h4>Bonjour, voici vos informations de connexion :</h4>
+            <p>Email : admin@example.com</p>
+            <p>Mot de passe : ${password}</p>`;
+            sendEmail(from, to, subject, text, html);
         }
     });
 }
 
-function generateToken(payload) {
-    const secretKey = 'votreCléSecrète';
-    const token = jwt.sign(payload, secretKey);
-    return token;
-}
-
-function verifyToken(token) {
-    const secretKey = 'votreCléSecrète';
-    try {
-        const decoded = jwt.verify(token, secretKey);
-        return decoded;
-    } catch (error) {
-        return null;
-    }
-}
-
-function verifyTokenMiddleware(req, res, next) {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = verifyToken(token);
-    if (decoded) {
-        req.user = decoded;
-        next();
-    } else {
-        res.status(401).json({ error: 'Invalid token' });
-    }
-}
 
 /******************************gestion des endpoint (deb ) */
 
@@ -69,7 +60,7 @@ app.post('/login', (req, res) => {
             res.status(401).json({ error: 'Mauvaise combinaison email et mot de passe' });
             return;
         }
-        if (user.password !== password) {
+        if (user.password !== cryptMdp(password)) {
             res.status(401).json({ error: 'Mauvaise combinaison email et mot de passe' });
             return;
         }
@@ -107,9 +98,20 @@ app.post('/add-user', verifyTokenMiddleware, (req, res) => {
         email: req.body.email,
         nom: req.body.nom,
         prenom: req.body.prenom,
-        password: req.body.password,
+        password: cryptMdp(req.body.password),
         droit: req.body.droit
     }).then((data) => {
+
+        //envoi du mail avec les informations de connexion
+        let from = 'noreply@localhost';
+        let to = req.body.email;
+        let subject = 'Vos identifiants de connexion';
+        let text = '';
+        let html = `<h4>Bonjour, voici vos informations de connexion :</h4>
+        <p>Email : ${req.body.email}</p>
+        <p>Mot de passe : ${req.body.password}</p>`;
+        sendEmail(from, to, subject, text, html);
+
         res.json({ message: 'Utilisateur créé avec succès' });
         return;
     })
@@ -165,6 +167,18 @@ app.post('/get-users', verifyTokenMiddleware, (req, res) => {
     })
 
 
+});
+
+app.post('/get-user', verifyTokenMiddleware, (req, res) => {
+    //Code pour rechercher un article
+    myUsers.findOne({
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json(data);
+        return;
+    })
 });
 
 app.post('/get-row', (req, res) => {
