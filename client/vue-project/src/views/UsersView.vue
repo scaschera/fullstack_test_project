@@ -82,6 +82,48 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="popupChangePassword" tabindex="-1" aria-labelledby="popupChangePassword" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupChangePassword">Changer le mot de passe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="updateUserPassword" class="form-label required">Nouveau Mot de passe</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control required" id="updateUserPassword" v-model="newPwdUser">
+                                <span class="input-group-text btn btn-success" @click="generate_password('updateUser')" id="basic-addon2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un mot de passe"><i class="fa-solid fa-key"></i></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateUserPassword2" class="form-label required">Re-saisir le Mot de passe</label>
+                            <input type="text" class="form-control required" id="updateUserPassword2" v-model="newPwdUser2">
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sendMailChangePwd" v-model="sendMailChangePwd">
+                                <label class="form-check-label" for="sendMailChangePwd">
+                                    Envoyer un mail à la personne
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3" v-if="msg_err_change_pwd">
+                            <p class="text-danger text-center" >{{msg_err_change_pwd}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-primary" @click="valid_update_pwd"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Modifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mt-2">
@@ -151,6 +193,7 @@
     const router = useRouter();
     const popupAddUser = ref(null);
     const popupEditUser = ref(null);
+    const popupChangePassword = ref(null);
 
     const newUser = ref({
         nom: '',
@@ -169,6 +212,11 @@
         droit: 'utilisateur'
     });
 
+    const newPwdUser = ref('');
+    const newPwdUser2 = ref('');
+    const sendMailChangePwd = ref(false);
+    const msg_err_change_pwd = ref('');
+
     const generate_password=(form)=>{
         const newPassword = Math.random().toString(36).slice(2);
 
@@ -178,7 +226,7 @@
         }
         else if(form=="updateUser")
         {
-            updateUser.value.password = newPassword;
+            newPwdUser.value = newPassword;
         }
         
     }   
@@ -211,6 +259,56 @@
         updateUser.value = response.data;
         popupEditUser.value=new Modal(document.getElementById("popupEditUser"));
         popupEditUser.value.show();
+
+    }
+
+    const change_pwd= async (id)=>{
+        
+        const response = await axios.post('http://localhost:3000/get-user', { id: id },
+            {
+                headers: {
+                    'Authorization': `Bearer ${myStore.getToken()}`
+                }
+            }
+        );
+        updateUser.value = response.data;
+        popupChangePassword.value=new Modal(document.getElementById("popupChangePassword"));
+        popupChangePassword.value.show();
+
+    }
+
+    const valid_update_pwd= async ()=>{
+        
+        document.getElementById('updateUserPassword').classList.remove('is-invalid');
+        document.getElementById('updateUserPassword2').classList.remove('is-invalid');
+
+
+        let valid_form=true;
+        let error="";
+        if(newPwdUser.value=="") {document.getElementById('updateUserPassword').classList.add('is-invalid');valid_form=false;error="Veuillez saisir les champs"}
+        if(newPwdUser2.value=="") {document.getElementById('updateUserPassword2').classList.add('is-invalid');valid_form=false;error="Veuillez saisir les champs"}
+
+        if(newPwdUser.value.length>0 && newPwdUser2.value.length>0 && (newPwdUser.value!=newPwdUser2.value)){valid_form=false;error="Les mots de passe ne sont pas identiques"}
+
+        msg_err_change_pwd.value=error;
+
+        if(valid_form)
+        {
+            try {
+                const response = await axios.post('http://localhost:3000/update-user-pwd', { new_pwd: newPwdUser.value, id: updateUser.value.id,sendMailChangePwd:sendMailChangePwd.value,email: updateUser.value.email },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${myStore.getToken()}`
+                        }
+                    }
+                );
+                popupChangePassword.value.hide();
+                get_rows('');
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
 
     }
 

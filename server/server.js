@@ -187,6 +187,34 @@ app.post('/update-user', verifyTokenMiddleware, (req, res) => {
 
 });
 
+app.post('/update-user-pwd', verifyTokenMiddleware, (req, res) => {
+    //Code pour modifier un utilisateur
+    myUsers.update({
+        password: cryptMdp(req.body.new_pwd)
+    }, {
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Utilisateur mis à jour !' });
+
+        if (req.body.sendMailChangePwd) {
+            //envoi du mail avec les informations de connexion
+            let from = 'noreply@localhost';
+            let to = req.body.email;
+            let subject = 'Vos identifiants de connexion';
+            let text = '';
+            let html = `<h4>Bonjour, voici vos informations de connexion :</h4>
+            <p>Email : ${req.body.email}</p>
+            <p>Mot de passe : ${req.body.new_pwd}</p>`;
+            sendEmail(from, to, subject, text, html);
+        }
+
+        return;
+    })
+
+});
+
 app.post('/get-user', verifyTokenMiddleware, (req, res) => {
     //Code pour rechercher un article
     myUsers.findOne({
