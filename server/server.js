@@ -101,6 +101,20 @@ app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
     })
 });
 
+app.post('/add-user', verifyTokenMiddleware, (req, res) => {
+    //Code pour créer un nouvel article
+    myUsers.create({
+        email: req.body.email,
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        password: req.body.password,
+        droit: req.body.droit
+    }).then((data) => {
+        res.json({ message: 'Utilisateur créé avec succès' });
+        return;
+    })
+});
+
 
 
 app.post('/delete-row', verifyTokenMiddleware, (req, res) => {
