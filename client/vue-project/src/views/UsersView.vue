@@ -231,6 +231,27 @@
         
     }   
 
+    const delete_user= async (id)=>{
+
+        if(confirm("Etes-vous sûr de supprimer cet utilisateur ?"))
+        {
+            try {
+                const response = await axios.post('http://localhost:3000/delete-user', { id: id},
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${myStore.getToken()}`
+                        }
+                    }
+                );
+                get_rows('');
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+       
+    }
+
     const initNewUserForm=()=>{
 
         newUser.value.nom = "";

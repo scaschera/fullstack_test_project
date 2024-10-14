@@ -92,6 +92,19 @@ app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
     })
 });
 
+app.post('/delete-user', verifyTokenMiddleware, (req, res) => {
+
+    myUsers.destroy({
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Utilisateur supprimé avec succès' });
+        return;
+    })
+
+})
+
 app.post('/add-user', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
     myUsers.create({
