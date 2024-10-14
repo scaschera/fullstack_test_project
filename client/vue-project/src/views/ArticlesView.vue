@@ -1,12 +1,71 @@
 <template>
-
+  <div class="modal fade" id="popupAddArticle" tabindex="-1" aria-labelledby="popupAddArticle" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="popupAddArticle">Ajouter un article</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="col-12">
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content"></textarea>
+              </div>
+              <div class="mb-3" v-if="msg">
+                <p>{{ msg }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-primary" @click="insert_new_row"><i
+                class="fa-solid fa-floppy-disk"></i>&nbsp;Enregistrer</button>
+          </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal fade" id="popupUpdateArticle" tabindex="-1" aria-labelledby="popupUpdateArticle" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="popupUpdateArticle">Modifier un article</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="col-12">
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre_update">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content_update"></textarea>
+              </div>
+              <div class="mb-3" v-if="msg">
+                <p>{{ msg_err_update }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-primary" @click="update_row"><i
+                class="fa-solid fa-floppy-disk"></i>&nbsp;Enregistrer</button>
+          </div>
+          </div>
+      </div>
+  </div>
   <div class="container">
     <div class="row">
       <div class="col-12 text-center mt-2">
         <h1>Mes articles</h1>
       </div>
     </div>
-    <div class="row" v-if="!display_form_add">
+    <div class="row">
       <div class="col-12">
         <table class="table table-striped table-hover">
           <thead>
@@ -15,7 +74,7 @@
               <th scope="col">Titre</th>
               <th scope="col">Content</th>
               <th scope="col">
-                <button type="button" @click="display_form_add = true" class="btn btn-success"><i
+                <button type="button" @click="display_form_add" class="btn btn-success"><i
                     class="fa-solid fa-plus"></i></button>
               </th>
             </tr>
@@ -36,52 +95,6 @@
         </table>
       </div>
     </div>
-    <div class="row" v-if="display_form_add">
-      <div class="col-12 text-center mt-2">
-        <h1>Ajouter un article</h1>
-      </div>
-      <div class="col-12">
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Titre</label>
-          <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre">
-        </div>
-        <div class="mb-3">
-          <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content"></textarea>
-        </div>
-        <div class="mb-3">
-          <button type="button" class="btn btn-danger" @click="display_form_add = false">Annuler</button>&nbsp;
-          <button type="button" class="btn btn-primary" @click="insert_new_row"><i
-              class="fa-solid fa-floppy-disk"></i>&nbsp;Enregistrer</button>
-        </div>
-        <div class="mb-3" v-if="msg">
-          <p>{{ msg }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="row" v-if="display_form_update">
-      <div class="col-12 text-center mt-2">
-        <h1>Modifier un article</h1>
-      </div>
-      <div class="col-12">
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Titre</label>
-          <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre_update">
-        </div>
-        <div class="mb-3">
-          <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content_update"></textarea>
-        </div>
-        <div class="mb-3">
-          <button type="button" class="btn btn-danger" @click="display_form_update = false">Annuler</button>&nbsp;
-          <button type="button" class="btn btn-primary" @click="update_row"><i
-              class="fa-solid fa-floppy-disk"></i>&nbsp;Enregistrer</button>
-        </div>
-        <div class="mb-3" v-if="msg">
-          <p>{{ msg_err_update }}</p>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script setup>
@@ -90,7 +103,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useStore } from '../stores/store';
 import axios from 'axios';
 import { useRouter } from 'vue-router'
-import { Tooltip } from "bootstrap";
+import { Tooltip, Modal } from "bootstrap";
 
 const titre = ref('');
 const content = ref('');
@@ -102,11 +115,16 @@ const content_update = ref('');
 const msg = ref('');
 const msg_err_update = ref('');
 const list_rows = ref([]);
-const display_form_add = ref(false);
-const display_form_update = ref(false);
+const modal_form_add = ref(null);
+const modal_form_update = ref(null);
 
 const myStore = useStore();
 const router = useRouter();
+
+const display_form_add=()=>{
+  modal_form_add.value=new Modal(document.getElementById("popupAddArticle"));
+  modal_form_add.value.show();
+}
 
 const insert_new_row = async () => {
   try {
@@ -120,7 +138,7 @@ const insert_new_row = async () => {
     });
     msg.value = response.data.message;
 
-    display_form_add.value = false;
+    modal_form_add.value.hide();
     titre.value = '';
     content.value = '';
     get_rows('');
@@ -136,7 +154,10 @@ const edit_article = async (id) => {
     const response = await axios.post('http://localhost:3000/get-row', { id: id });
     const row = response.data;
     msg_err_update.value = '';
-    display_form_update.value = true;
+    
+    modal_form_update.value=new Modal(document.getElementById("popupUpdateArticle"));
+    modal_form_update.value.show();
+
     id_update.value = id;
     titre_update.value = row.title;
     content_update.value = row.content;
@@ -159,7 +180,7 @@ const update_row = async () => {
       }
     });
     msg_err_update.value = response.data.message;
-    display_form_update.value = false;
+    modal_form_update.value.hide();
     titre_update.value = '';
     content_update.value = '';
     get_rows('');
