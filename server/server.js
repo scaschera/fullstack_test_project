@@ -169,6 +169,24 @@ app.post('/get-users', verifyTokenMiddleware, (req, res) => {
 
 });
 
+app.post('/update-user', verifyTokenMiddleware, (req, res) => {
+    //Code pour modifier un utilisateur
+    myUsers.update({
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        email: req.body.email,
+        droit: req.body.droit
+    }, {
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Utilisateur mis à jour !' });
+        return;
+    })
+
+});
+
 app.post('/get-user', verifyTokenMiddleware, (req, res) => {
     //Code pour rechercher un article
     myUsers.findOne({

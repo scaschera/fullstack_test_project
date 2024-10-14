@@ -214,6 +214,40 @@
 
     }
 
+    const valid_update_user= async ()=>{
+        
+        document.getElementById('updateUserNom').classList.remove('is-invalid');
+        document.getElementById('updateUserPrenom').classList.remove('is-invalid');
+        document.getElementById('updateUserEmail').classList.remove('is-invalid');
+        document.getElementById('updateUserDroit').classList.remove('is-invalid');
+
+
+        let valid_form=true;
+        if(updateUser.value.nom=="") {document.getElementById('updateUserNom').classList.add('is-invalid');valid_form=false;}
+        if(updateUser.value.prenom=="") {document.getElementById('updateUserPrenom').classList.add('is-invalid');valid_form=false;}
+        if(updateUser.value.email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) == null) {document.getElementById('updateUserPrenom').classList.add('is-invalid');valid_form=false;}
+        if(updateUser.value.droit=="") {document.getElementById('updateUserDroit').classList.add('is-invalid');valid_form=false;}
+
+        if(valid_form)
+        {
+            try {
+                const response = await axios.post('http://localhost:3000/update-user', updateUser.value,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${myStore.getToken()}`
+                        }
+                    }
+                );
+                popupEditUser.value.hide();
+                get_rows('');
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+
+    }
+
 
     const insert_new_user = async (form) => {
 
