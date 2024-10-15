@@ -103,7 +103,7 @@
                             <label for="updateUserPassword2" class="form-label required">Re-saisir le Mot de passe</label>
                             <input type="text" class="form-control required" id="updateUserPassword2" v-model="newPwdUser2">
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="row_send_mail">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="sendMailChangePwd" v-model="sendMailChangePwd">
                                 <label class="form-check-label" for="sendMailChangePwd">
@@ -162,7 +162,7 @@
                                     <button type="button" @click="change_pwd(row.id)" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Changer le mot de passe"><i
                                         class="fa-solid fa-key"></i>
                                     </button>
-                                    <button type="button" @click="delete_user(row.id)" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'utilisateur"><i
+                                    <button v-if="row.nom != 'admin'" type="button" @click="delete_user(row.id)" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'utilisateur"><i
                                         class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
@@ -278,6 +278,18 @@
             }
         );
         updateUser.value = response.data;
+        if(updateUser.value.nom=="admin")
+        {
+            document.getElementById('updateUserNom').disabled=true;
+            document.getElementById('updateUserPrenom').disabled=true;
+            document.getElementById('updateUserDroit').disabled=true;
+        }
+        else
+        {
+            document.getElementById('updateUserNom').disabled=false;
+            document.getElementById('updateUserPrenom').disabled=false;
+            document.getElementById('updateUserDroit').disabled=false;
+        }
         popupEditUser.value=new Modal(document.getElementById("popupEditUser"));
         popupEditUser.value.show();
 
@@ -293,6 +305,14 @@
             }
         );
         updateUser.value = response.data;
+        if(updateUser.value.nom=="admin")
+        {
+            document.getElementById('row_send_mail').style.display="none";
+        }
+        else
+        {
+            document.getElementById('row_send_mail').style.display="block";
+        }
         popupChangePassword.value=new Modal(document.getElementById("popupChangePassword"));
         popupChangePassword.value.show();
 
