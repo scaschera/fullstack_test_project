@@ -140,10 +140,14 @@
                             <th scope="col">Prenom</th>
                             <th scope="col">Adresse mail</th>
                             <th scope="col">Droit</th>
-                            <th scope="col">
-                                <button type="button" @click="displayPopupAddUser" class="btn btn-success"><i
-                                    class="fa-solid fa-plus"></i>
-                                </button>
+                            <th scope="col" style="width:20%">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Rechercher..." v-model="q_search" id="search_user" >
+                                    <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-search"></i></span>
+                                    <button type="button" @click="displayPopupAddUser" class="btn btn-success"><i
+                                        class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -182,7 +186,7 @@
 </style>
 <script setup>
 
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, watch } from 'vue';
     import { useStore } from '../stores/store';
     import axios from 'axios';
     import { useRouter } from 'vue-router'
@@ -194,6 +198,7 @@
     const popupAddUser = ref(null);
     const popupEditUser = ref(null);
     const popupChangePassword = ref(null);
+    const q_search = ref('');
 
     const newUser = ref({
         nom: '',
@@ -444,6 +449,10 @@
             console.error(error);
         }
     }
+
+    watch(() => q_search.value, (newVal, oldVal) => {
+        get_rows(newVal);
+    });
 
     onMounted(() => {
 
