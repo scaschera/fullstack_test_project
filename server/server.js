@@ -27,6 +27,8 @@ const syncTable = () => {
             let email_admin = 'admin@example.com';
             let password = Math.random().toString(36).slice(2);
 
+            //hehooo
+
             myUsers.create({
                 nom: 'admin',
                 prenom: 'admin',
