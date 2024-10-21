@@ -72,6 +72,7 @@ app.post('/login', (req, res) => {
             {
                 message: "Connexion réussie",
                 user: {
+                    id: user.id,
                     nom: user.nom,
                     prenom: user.prenom,
                     email: user.email,
@@ -196,7 +197,11 @@ app.post('/update-user', verifyTokenMiddleware, (req, res) => {
             id: req.body.id
         }
     }).then((data) => {
-        res.json({ message: 'Utilisateur mis à jour !' });
+        myUsers.findOne({ where: { id: req.body.id } }).then((dataUser) => {
+            const { password, ...userWithoutPassword } = dataUser.dataValues; // Suppression du mot de passe
+            res.json(userWithoutPassword);
+            return;
+        })
         return;
     })
 

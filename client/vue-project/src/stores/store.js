@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 export const useStore = defineStore('myStore', () => {
 
     const user = ref({
+        id: '',
         nom: '',
         prenom: '',
         email: '',
@@ -22,6 +23,7 @@ export const useStore = defineStore('myStore', () => {
 
     function logout() {
         user.value = {
+            id: '',
             nom: '',
             prenom: '',
             email: '',
@@ -35,6 +37,7 @@ export const useStore = defineStore('myStore', () => {
     function login(userRecup) {
 
         user.value = {
+            id: userRecup.id,
             nom: userRecup.nom,
             prenom: userRecup.prenom,
             email: userRecup.email,
@@ -45,6 +48,17 @@ export const useStore = defineStore('myStore', () => {
         router.push({ name: 'articles' });
     }
 
+    function setUser(userRecup) {
+        user.value = {
+            id: getUser().id,
+            nom: userRecup.nom,
+            prenom: userRecup.prenom,
+            email: userRecup.email,
+            droit: getUser().droit,
+            token: getUser().token
+        }
+    }
+
     function setToken(token) {
         user.value.token = token;
     }
@@ -52,5 +66,9 @@ export const useStore = defineStore('myStore', () => {
         return user.value.token;
     }
 
-    return { articlesearch, searchArticle, user, logout, login, setToken, isLogin, getToken }
+    function getUser() {
+        return user.value;
+    }
+
+    return { articlesearch, searchArticle, user, logout, login, setToken, isLogin, getToken, getUser, setUser }
 })
