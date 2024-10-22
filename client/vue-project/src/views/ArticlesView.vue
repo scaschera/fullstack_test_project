@@ -129,9 +129,9 @@
               <td valign="middle">
                   <span :class="`badge bg-${row.qte === 0 ? 'danger' : row.qte <= 5 ? 'warning' : 'success'}`" style="margin-top: 5px;">{{ row.qte }}</span>
                   <div class="btn-group float-end" role="group" aria-label="Basic example" >
-                    <button type="button" @click="update_qte_article(row.qte-1,row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Enlever" class="btn btn-sm btn-secondary"><i
+                    <button type="button" v-if="row.qte > 0" @click="update_qte_article(row.qte-1,row.id)"  class="btn btn-sm btn-secondary"><i
                       class="fa-solid fa-minus"></i></button>
-                    <button type="button" @click="update_qte_article(row.qte+1,row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ajouter" class="btn  btn-sm btn-secondary"><i
+                    <button type="button" @click="update_qte_article(row.qte+1,row.id)" class="btn  btn-sm btn-secondary"><i
                       class="fa-solid fa-plus"></i></button>
                     
                   </div>
