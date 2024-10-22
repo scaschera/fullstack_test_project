@@ -165,10 +165,11 @@ app.post('/get-rows', (req, res) => {
 
     myArticles.findAll({
         where: {
-            title: {
-                [Op.like]: `%${req.body.q}%`
-
-            }
+            [Op.or]: [
+                { title: { [Op.like]: `%${req.body.q}%` } },
+                { content: { [Op.like]: `%${req.body.q}%` } },
+                { id: { [Op.like]: `%${req.body.q}%` } }
+            ]
         }
     }).then((data) => {
         res.json(data);
