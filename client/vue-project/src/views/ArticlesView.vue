@@ -7,18 +7,36 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <div class="col-12">
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Titre</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre">
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content"></textarea>
+                  </div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content"></textarea>
-              </div>
-              <div class="mb-3" v-if="msg">
-                <p>{{ msg }}</p>
-              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Prix</label>
+                    <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="exampleFormControlInput1" v-model="prix" step="0.01">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">€</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Quantité</label>
+                    <input type="number" class="form-control" id="exampleFormControlInput1" v-model="qte" >
+                  </div>
+                </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -37,18 +55,39 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <div class="col-12">
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Titre</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre_update">
+            <div class="row">
+              <div class="col-12">
+                <div class="mb-3">
+                  <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                  <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre_update">
+                </div>
+                <div class="mb-3">
+                  <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content_update"></textarea>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content_update"></textarea>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="exampleFormControlTextarea1" class="form-label">Prix</label>
+                  <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="exampleFormControlInput1" v-model="prix_update" step="0.01">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">€</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="mb-3" v-if="msg">
-                <p>{{ msg_err_update }}</p>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="exampleFormControlTextarea1" class="form-label">Quantité</label>
+                  <input type="number" class="form-control" id="exampleFormControlInput1" v-model="qte_update" >
+                </div>
               </div>
+            </div>
+            <div class="mb-3" v-if="msg">
+              <p>{{ msg_err_update }}</p>
             </div>
           </div>
           <div class="modal-footer">
@@ -70,10 +109,12 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th scope="col">#</th>
+              <th scope="col" style="width:1%">#</th>
               <th scope="col">Titre</th>
               <th scope="col">Content</th>
-              <th scope="col">
+              <th scope="col" style="width:10%">Prix</th>
+              <th scope="col" style="width:10%">Quantité</th>
+              <th scope="col " style="width:10%">
                 <button type="button" @click="display_form_add" class="btn btn-success"><i
                     class="fa-solid fa-plus"></i></button>
               </th>
@@ -81,10 +122,21 @@
           </thead>
           <tbody>
             <tr v-for="row in list_rows" :key="row.id">
-              <th scope="row">{{ row.id }}</th>
-              <td>{{ row.title }}</td>
-              <td>{{ row.content }}</td>
-              <td>
+              <th scope="row" valign="middle">{{ row.id }}</th>
+              <td valign="middle">{{ row.title }}</td>
+              <td valign="middle">{{ row.content }}</td>
+              <td valign="middle">{{ row.price }} €</td>
+              <td valign="middle">
+                  <span :class="`badge bg-${row.qte === 0 ? 'danger' : row.qte <= 5 ? 'warning' : 'success'}`" style="margin-top: 5px;">{{ row.qte }}</span>
+                  <div class="btn-group float-end" role="group" aria-label="Basic example" >
+                    <button type="button" @click="update_qte_article(row.qte-1,row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Enlever" class="btn btn-sm btn-secondary"><i
+                      class="fa-solid fa-minus"></i></button>
+                    <button type="button" @click="update_qte_article(row.qte+1,row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ajouter" class="btn  btn-sm btn-secondary"><i
+                      class="fa-solid fa-plus"></i></button>
+                    
+                  </div>
+              </td>
+              <td valign="middle">
                 <button type="button" @click="edit_article(row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier" class="btn btn-primary"><i
                   class="fa-solid fa-edit"></i></button>&nbsp;
                 <button type="button" @click="delete_article(row.id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer" class="btn btn-danger"><i
@@ -107,12 +159,15 @@ import { Tooltip, Modal } from "bootstrap";
 
 const titre = ref('');
 const content = ref('');
+const prix = ref('0');
+const qte = ref('0');
 
 const id_update = ref('');
 const titre_update = ref('');
 const content_update = ref('');
+const prix_update = ref('0');
+const qte_update = ref('0');
 
-const msg = ref('');
 const msg_err_update = ref('');
 const list_rows = ref([]);
 const modal_form_add = ref(null);
@@ -122,6 +177,12 @@ const myStore = useStore();
 const router = useRouter();
 
 const display_form_add=()=>{
+
+  titre.value = '';
+  content.value = '';
+  prix.value = '0';
+  qte.value = '0';
+
   modal_form_add.value=new Modal(document.getElementById("popupAddArticle"));
   modal_form_add.value.show();
 }
@@ -130,13 +191,14 @@ const insert_new_row = async () => {
   try {
     const response = await axios.post('http://localhost:3000/insert-row', {
       title: titre.value,
-      content: content.value
+      content: content.value,
+      price: prix.value,
+      qte: qte.value
     }, {
       headers: {
         'Authorization': `Bearer ${myStore.getToken()}`
       }
     });
-    msg.value = response.data.message;
 
     modal_form_add.value.hide();
     titre.value = '';
@@ -161,6 +223,8 @@ const edit_article = async (id) => {
     id_update.value = id;
     titre_update.value = row.title;
     content_update.value = row.content;
+    prix_update.value = row.price;
+    qte_update.value = row.qte;
   }
   catch (error) {
     console.error(error);
@@ -173,7 +237,9 @@ const update_row = async () => {
     const response = await axios.post('http://localhost:3000/update-row', {
       id: id_update.value,
       title: titre_update.value,
-      content: content_update.value
+      content: content_update.value,
+      price: prix_update.value,
+      qte: qte_update.value
     }, {
       headers: {
         'Authorization': `Bearer ${myStore.getToken()}`
@@ -183,6 +249,23 @@ const update_row = async () => {
     modal_form_update.value.hide();
     titre_update.value = '';
     content_update.value = '';
+    get_rows('');
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+const update_qte_article = async (newqte, id) => {
+  try {
+    const response = await axios.post('http://localhost:3000/update-qte', {
+      qte: newqte,
+      id: id
+    }, {
+      headers: {
+        'Authorization': `Bearer ${myStore.getToken()}`
+      }
+    });
     get_rows('');
   }
   catch (error) {

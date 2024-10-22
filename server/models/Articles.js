@@ -13,6 +13,12 @@ const Articles = sequelize.define('Articles', {
     content: {
         type: DataTypes.TEXT
     },
+    price: {
+        type: DataTypes.FLOAT
+    },
+    qte: {
+        type: DataTypes.INTEGER
+    },
     createdAt: {
         type: DataTypes.DATE
     },

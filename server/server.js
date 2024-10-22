@@ -100,7 +100,9 @@ app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
     myArticles.create({
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        price: req.body.price,
+        qte: req.body.qte
     }).then((data) => {
         res.json({ message: 'Article créé avec succès' });
         return;
@@ -274,13 +276,29 @@ app.post('/update-row', verifyTokenMiddleware, (req, res) => {
     //Code pour mise à jour un article
     myArticles.update({
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        price: req.body.price,
+        qte: req.body.qte
     }, {
         where: {
             id: req.body.id
         }
     }).then((data) => {
         res.json({ message: 'Article mise à jour !' });
+        return;
+    })
+});
+
+app.post('/update-qte', verifyTokenMiddleware, (req, res) => {
+    //Code pour mise à jour un article
+    myArticles.update({
+        qte: req.body.qte
+    }, {
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Qte mise à jour !' });
         return;
     })
 });
