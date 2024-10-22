@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="popupAddArticle" tabindex="-1" aria-labelledby="popupAddArticle" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
           <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title" id="popupAddArticle">Ajouter un article</h5>
@@ -8,14 +8,25 @@
           </div>
           <div class="modal-body">
               <div class="row">
-                <div class="col-12">
+                <div class="col-6">
+                  <div class="w-100 h-75 border">
+                    <img :src="url_img ? url_img : '/src/assets/img/placeholder.jpg'" class="w-100 h-100">
+                  </div>
+                  <div class="input-group mb-3 mt-1">
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="URL de l'image" v-model="url_img">
+                    <div class="input-group-append">
+                      <span class="input-group-text h-100" id="basic-addon2" style="cursor:pointer" @click="url_img = ''"><i class="fa-solid fa-xmark"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
                   <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Titre</label>
                     <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre">
                   </div>
                   <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content"></textarea>
+                    <textarea class="form-control" id="exampleFormControlTextarea1"  rows="6" v-model="content"></textarea>
                   </div>
                 </div>
               </div>
@@ -48,7 +59,7 @@
       </div>
   </div>
   <div class="modal fade" id="popupUpdateArticle" tabindex="-1" aria-labelledby="popupUpdateArticle" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
           <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title" id="popupUpdateArticle">Modifier un article</h5>
@@ -56,14 +67,25 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-12">
+              <div class="col-6">
+                <div class="w-100 h-75 border">
+                  <img :src="url_img_update ? url_img_update : '/src/assets/img/placeholder.jpg'" class="w-100 h-100">
+                </div>
+                <div class="input-group mb-3 mt-1">
+                  <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="URL de l'image" v-model="url_img_update">
+                  <div class="input-group-append">
+                    <span class="input-group-text h-100" id="basic-addon2" style="cursor:pointer" @click="url_img_update = ''"><i class="fa-solid fa-xmark"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
                 <div class="mb-3">
                   <label for="exampleFormControlInput1" class="form-label">Titre</label>
                   <input type="text" class="form-control" id="exampleFormControlInput1" v-model="titre_update">
                 </div>
                 <div class="mb-3">
                   <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="content_update"></textarea>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" v-model="content_update"></textarea>
                 </div>
               </div>
             </div>
@@ -110,6 +132,7 @@
           <thead>
             <tr>
               <th scope="col" style="width:1%">#</th>
+              <th scope="col" style="width:5%"></th>
               <th scope="col">Titre</th>
               <th scope="col">Content</th>
               <th scope="col" style="width:10%">Prix</th>
@@ -123,6 +146,9 @@
           <tbody>
             <tr v-for="row in list_rows" :key="row.id">
               <th scope="row" valign="middle">{{ row.id }}</th>
+              <th scope="row" valign="middle">
+                <img :src="row.url_img ? row.url_img : '/src/assets/img/placeholder.jpg'" class="img-fluid" alt="image">
+              </th>
               <td valign="middle">{{ row.title }}</td>
               <td valign="middle">{{ row.content }}</td>
               <td valign="middle">{{ row.price }} €</td>
@@ -157,12 +183,14 @@ import axios from 'axios';
 import { useRouter } from 'vue-router'
 import { Tooltip, Modal } from "bootstrap";
 
+const url_img=ref('');
 const titre = ref('');
 const content = ref('');
 const prix = ref('0');
 const qte = ref('0');
 
 const id_update = ref('');
+const url_img_update = ref('');
 const titre_update = ref('');
 const content_update = ref('');
 const prix_update = ref('0');
@@ -178,6 +206,7 @@ const router = useRouter();
 
 const display_form_add=()=>{
 
+  url_img.value = '';
   titre.value = '';
   content.value = '';
   prix.value = '0';
@@ -190,6 +219,7 @@ const display_form_add=()=>{
 const insert_new_row = async () => {
   try {
     const response = await axios.post('http://localhost:3000/insert-row', {
+      url_img: url_img.value,
       title: titre.value,
       content: content.value,
       price: prix.value,
@@ -222,6 +252,7 @@ const edit_article = async (id) => {
 
     id_update.value = id;
     titre_update.value = row.title;
+    url_img_update.value = row.url_img;
     content_update.value = row.content;
     prix_update.value = row.price;
     qte_update.value = row.qte;
@@ -237,6 +268,7 @@ const update_row = async () => {
     const response = await axios.post('http://localhost:3000/update-row', {
       id: id_update.value,
       title: titre_update.value,
+      url_img: url_img_update.value,
       content: content_update.value,
       price: prix_update.value,
       qte: qte_update.value

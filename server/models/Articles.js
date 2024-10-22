@@ -19,6 +19,9 @@ const Articles = sequelize.define('Articles', {
     qte: {
         type: DataTypes.INTEGER
     },
+    url_img: {
+        type: DataTypes.STRING
+    },
     createdAt: {
         type: DataTypes.DATE
     },

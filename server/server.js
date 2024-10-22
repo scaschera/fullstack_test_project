@@ -99,6 +99,7 @@ app.post('/check-pwd-user', verifyTokenMiddleware, (req, res) => {
 app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
     myArticles.create({
+        url_img: req.body.url_img,
         title: req.body.title,
         content: req.body.content,
         price: req.body.price,
@@ -276,6 +277,7 @@ app.post('/update-row', verifyTokenMiddleware, (req, res) => {
     //Code pour mise à jour un article
     myArticles.update({
         title: req.body.title,
+        url_img: req.body.url_img,
         content: req.body.content,
         price: req.body.price,
         qte: req.body.qte
