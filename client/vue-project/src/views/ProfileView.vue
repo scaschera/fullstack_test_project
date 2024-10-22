@@ -63,15 +63,16 @@
                                     role="tabpanel" aria-labelledby="mdp-tab">
                                     <div class="row mt-3">
                                         <div class="col-sm-12">
-                                            <input type="password" class="form-control"
-                                                placeholder="Ancien mot de passe" aria-label="Ancien mot de passe">
+                                            <input type="password" class="form-control" id="oldUserPassword"
+                                                v-model="oldPwd" placeholder="Ancien mot de passe"
+                                                aria-label="Ancien mot de passe">
                                         </div>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-sm-12">
                                             <div class="input-group">
                                                 <input type="text" class="form-control required" id="updateUserPassword"
-                                                    placeholder="Nouveau mot de passe" v-model="newPwdUser">
+                                                    placeholder="Nouveau mot de passe" v-model="newPwd">
                                                 <span class="input-group-text btn btn-success"
                                                     @click="generate_password()" id="basic-addon2"
                                                     style="cursor: pointer;" data-bs-toggle="tooltip"
@@ -82,15 +83,19 @@
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-sm-12">
-                                            <input type="password" class="form-control"
-                                                placeholder="Confirmer mot de passe"
+                                            <input type="password" class="form-control" id="updateUserPassword2"
+                                                v-model="newPwd2" placeholder="Confirmer mot de passe"
                                                 aria-label="Confirmer mot de passe">
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <button type="button" class="btn btn-primary">Modifier</button>
+                                            <button type="button" class="btn btn-primary"
+                                                @click="valid_update_pwd">Modifier</button>
+                                            <span v-if="msg_error_pwd" class="text-danger" style="margin-left: 10px;">{{
+                                                msg_error_pwd
+                                                }}</span>
                                         </div>
                                     </div>
 
@@ -116,6 +121,84 @@ const activeTab = ref('infos');
 const newName = ref(myStore.getUser().nom);
 const newPrenom = ref(myStore.getUser().prenom);
 const newEmail = ref(myStore.getUser().email);
+
+const oldPwd = ref('');
+const newPwd = ref('');
+const newPwd2 = ref('');
+const msg_error_pwd = ref('');
+
+const generate_password = () => {
+    const newPassword = Math.random().toString(36).slice(2);
+    newPwd.value = newPassword;
+}
+
+const valid_update_pwd = async () => {
+
+    if (confirm("Etes-vous sûr de modifier ces informations ?")) {
+
+        
+
+        if (oldPwd.value == "" || newPwd.value == "" || newPwd2.value == "") {
+
+            document.getElementById('oldUserPassword').classList.remove('is-invalid');
+            document.getElementById('updateUserPassword').classList.remove('is-invalid');
+            document.getElementById('updateUserPassword2').classList.remove('is-invalid');
+
+            if (oldPwd.value == "") { document.getElementById('oldUserPassword').classList.add('is-invalid'); }
+            if (newPwd.value == "") { document.getElementById('updateUserPassword').classList.add('is-invalid'); }
+            if (newPwd2.value == "") { document.getElementById('updateUserPassword2').classList.add('is-invalid'); }
+
+            msg_error_pwd.value = "Veuillez saisir les champs";
+
+            
+            return;
+        }
+
+        if (newPwd.value != newPwd2.value) {
+            msg_error_pwd.value = "Les mots de passe ne sont pas identiques";
+
+            
+            return;
+        }
+
+        //verification de l'ancien mdp
+
+        try {
+            const response = await axios.post('http://localhost:3000/check-pwd-user', { id: myStore.getUser().id, pwd: oldPwd.value },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${myStore.getToken()}`
+                    }
+                }
+            );
+            
+            
+            if(response.data.message=="ok")
+            {
+                const response_upd=await axios.post('http://localhost:3000/update-user-pwd', { new_pwd: newPwd.value, id: myStore.getUser().id },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${myStore.getToken()}`
+                        }
+                    }
+                );
+                
+                msg_error_pwd.value = response_upd.data.message;
+            }
+            else
+            {
+                msg_error_pwd.value = response.data.message;
+            }
+           
+        }
+        catch (error) {
+            msg_error_pwd.value = error.response.data.error;
+            
+        }
+
+    }
+
+}
 
 const valid_update_user = async () => {
 

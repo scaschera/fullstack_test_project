@@ -84,6 +84,18 @@ app.post('/login', (req, res) => {
 
 });
 
+app.post('/check-pwd-user', verifyTokenMiddleware, (req, res) => {
+
+    myUsers.findOne({ where: { id: req.body.id, password: cryptMdp(req.body.pwd) } }).then(user => {
+
+        if (!user) {
+            res.status(401).json({ error: 'Ancien mot de passe incorrect' });
+            return;
+        }
+        res.json({ message: "ok" });
+    });
+});
+
 app.post('/insert-row', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
     myArticles.create({
@@ -216,7 +228,7 @@ app.post('/update-user-pwd', verifyTokenMiddleware, (req, res) => {
             id: req.body.id
         }
     }).then((data) => {
-        res.json({ message: 'Utilisateur mis à jour !' });
+        res.json({ message: 'Mot de passe mis à jour !' });
 
         if (req.body.sendMailChangePwd) {
             //envoi du mail avec les informations de connexion
