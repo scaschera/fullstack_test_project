@@ -203,6 +203,28 @@ app.post('/get-users', verifyTokenMiddleware, (req, res) => {
 
 });
 
+app.post('/get-clients', verifyTokenMiddleware, (req, res) => {
+
+    myClients.findAll({
+        where: {
+            [Op.or]: [
+                { nom: { [Op.like]: `%${req.body.q}%` } },
+                { prenom: { [Op.like]: `%${req.body.q}%` } },
+                { email: { [Op.like]: `%${req.body.q}%` } }
+            ]
+        }
+    }).then((data) => {
+        const dataToSend = data.map((user) => {
+            const { password, ...userWithoutPassword } = user.dataValues; // Suppression du mot de passe
+            return userWithoutPassword;
+        });
+        res.json(dataToSend);
+        return;
+    })
+
+
+});
+
 app.post('/update-user', verifyTokenMiddleware, (req, res) => {
     //Code pour modifier un utilisateur
     myUsers.update({

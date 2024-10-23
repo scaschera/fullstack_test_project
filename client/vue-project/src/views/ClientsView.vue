@@ -32,17 +32,18 @@
                             <th scope="row">{{ row.id }}</th>
                             <td>{{ row.nom }}</td>
                             <td>{{ row.prenom }}</td>
+                            <td>{{ row.tel }}</td>
                             <td>{{ row.email }}</td>
-                            <td>{{ row.droit }}</td>
+                            <td>{{ row.adresse }}<br />{{ row.cp }} {{ row.ville }}</td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <button type="button" @click="edit_user(row.id)" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier l'utilisateur">
+                                    <button type="button" @click="edit_client(row.id)" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier le client">
                                       <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     <button type="button" @click="change_pwd(row.id)" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Changer le mot de passe"><i
                                         class="fa-solid fa-key"></i>
                                     </button>
-                                    <button v-if="row.nom != 'admin'" type="button" @click="delete_user(row.id)" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'utilisateur"><i
+                                    <button v-if="row.nom != 'admin'" type="button" @click="delete_client(row.id)" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer le client"><i
                                         class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
@@ -56,10 +57,11 @@
 </template>
 <script setup>
 
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, watch } from 'vue';
     import { useStore } from '../stores/store';
     import axios from 'axios';
-    import { useRouter } from 'vue-router'
+    import { useRouter } from 'vue-router';
+    import { Tooltip,Modal } from "bootstrap";
 
     const myStore = useStore();
     const router = useRouter();
@@ -68,11 +70,39 @@
     const popupAddClient = ref(null);
     const q_search = ref('');
 
+    const get_rows = async (q) => {
+        try {
+            const response = await axios.post('http://localhost:3000/get-clients', { q: q },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${myStore.getToken()}`
+                    }
+                }
+            );
+            TabClients.value = response.data;
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    watch(() => q_search.value, (newVal, oldVal) => {
+        get_rows(newVal);
+    });
+
     onMounted(() => {
 
-        if(myStore.getToken()=="")
+        if(myStore.getToken()!="")
         {
-           router.push({ name: 'login' });
+            get_rows('');
         }
+        else{
+            router.push({ name: 'login' });
+        }
+
+        // Tooltips initialization
+        new Tooltip(document.body, {
+            selector: "[data-bs-toggle='tooltip']",
+        })
     });
 </script>
