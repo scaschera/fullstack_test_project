@@ -13,11 +13,13 @@ app.use(cors());
 
 const myArticles = require('./models/Articles');
 const myUsers = require('./models/Users');
+const myClients = require('./models/Clients');
 const { sendEmail } = require('./functions/mail');
 
 const syncTable = () => {
     myArticles.sync();
     myUsers.sync();
+    myClients.sync();
 
     //creation de l'utilisateur admin si il n'exsite pas
     myUsers.findOne({ where: { email: 'admin@example.com' } }).then(user => {

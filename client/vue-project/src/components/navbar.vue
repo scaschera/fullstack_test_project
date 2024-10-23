@@ -11,6 +11,9 @@
           <li class="nav-item" v-if="isLogged">
             <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'articles' }">Articles</RouterLink>
           </li>
+          <li class="nav-item" v-if="isLogged">
+            <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'clients' }">Clients</RouterLink>
+          </li>
           <li class="nav-item" v-if="isLogged && user.droit == 'admin'">
             <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'users' }">Utilisateurs</RouterLink>
           </li>

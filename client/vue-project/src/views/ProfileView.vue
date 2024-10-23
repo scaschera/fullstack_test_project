@@ -110,11 +110,13 @@
 </template>
 <script setup>
 import { useStore } from '@/stores/store';
-import { ref } from 'vue';
+import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 
 const myStore = useStore();
+const router = useRouter();
 
 const activeTab = ref('infos');
 
@@ -220,5 +222,13 @@ const valid_update_user = async () => {
     }
 
 }
+
+onMounted(() => {
+
+    if(myStore.getToken()=="")
+    {
+        router.push({ name: 'login' });
+    }
+});
 
 </script>
