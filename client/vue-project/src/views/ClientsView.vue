@@ -1,4 +1,148 @@
 <template>
+
+    <div class="modal fade" id="popupAddClient" tabindex="-1" aria-labelledby="popupAddClient" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupAddClient">Ajouter un client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="newClientNom" class="form-label required">Nom</label>
+                            <input type="text" class="form-control required" id="newClientNom" v-model="newClient.nom">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="newClientPrenom" class="form-label required">Prenom</label>
+                            <input type="text" class="form-control required" id="newClientPrenom" v-model="newClient.prenom">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="newClientTel" class="form-label required">Téléphone</label>
+                            <input type="text" class="form-control required" id="newClientTel" v-model="newClient.telephone">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="newClientAdresse" class="form-label required">Adresse</label>
+                            <input type="text" class="form-control required" id="newClientAdresse" v-model="newClient.adresse">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="newClientCp" class="form-label required">Code postal</label>
+                            <input type="text" class="form-control required" id="newClientCp" v-model="newClient.cp">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="newClientVille" class="form-label required">Ville</label>
+                            <input type="text" class="form-control required" id="newClientVille" v-model="newClient.ville">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="newClientEmail" class="form-label required">Adresse mail</label>
+                        <input type="email" class="form-control required" id="newClientEmail" v-model="newClient.email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newClientPassword" class="form-label required">Mot de passe</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control required" id="newClientPassword" v-model="newClient.password">
+                            <span class="input-group-text btn btn-success" @click="generate_password('newClient')" id="basic-addon2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un mot de passe"><i class="fa-solid fa-key"></i></span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" @click="insert_new_Client"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Ajouter</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="popupEditClient" tabindex="-1" aria-labelledby="popupEditClient" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupEditClient">Modifier un client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="updateClientNom" class="form-label required">Nom</label>
+                            <input type="text" class="form-control required" id="updateClientNom" v-model="updateClient.nom">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="updateClientPrenom" class="form-label required">Prenom</label>
+                            <input type="text" class="form-control required" id="updateClientPrenom" v-model="updateClient.prenom">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="updateClientTel" class="form-label required">Téléphone</label>
+                            <input type="text" class="form-control required" id="updateClientTel" v-model="updateClient.telephone">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="updateClientAdresse" class="form-label required">Adresse</label>
+                            <input type="text" class="form-control required" id="updateClientAdresse" v-model="updateClient.adresse">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="updateClientCp" class="form-label required">Code postal</label>
+                            <input type="text" class="form-control required" id="updateClientCp" v-model="updateClient.cp">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="updateClientVille" class="form-label required">Ville</label>
+                            <input type="text" class="form-control required" id="updateClientVille" v-model="updateClient.ville">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="updateClientEmail" class="form-label required">Adresse mail</label>
+                        <input type="email" class="form-control required" id="updateClientEmail" v-model="updateClient.email">
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" @click="valid_update_client"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Modifier</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mt-2">
@@ -32,7 +176,7 @@
                             <th scope="row">{{ row.id }}</th>
                             <td>{{ row.nom }}</td>
                             <td>{{ row.prenom }}</td>
-                            <td>{{ row.tel }}</td>
+                            <td>{{ row.telephone}}</td>
                             <td>{{ row.email }}</td>
                             <td>{{ row.adresse }}<br />{{ row.cp }} {{ row.ville }}</td>
                             <td>
@@ -68,7 +212,113 @@
 
     const TabClients = ref([]);
     const popupAddClient = ref(null);
+    const popupEditClient = ref(null);
     const q_search = ref('');
+    const newPwdUser = ref('');
+
+    const newClient = ref({
+        nom: '',
+        prenom: '',
+        adresse: '',
+        cp: '',
+        ville: '',
+        email: '',
+        telephone: '',
+        password: ''
+    });
+
+    const updateClient = ref({
+        id: '',
+        nom: '',
+        prenom: '',
+        adresse: '',
+        cp: '',
+        ville: '',
+        email: '',
+        telephone: '',
+        password: ''
+    });
+
+    const generate_password=(form)=>{
+        const newPassword = Math.random().toString(36).slice(2);
+
+        if(form=="newClient")
+        {
+            newClient.value.password = newPassword;
+        }
+        else if(form=="updateClient")
+        {
+            newPwdUser.value = newPassword;
+        }
+        
+    }
+    
+    const insert_new_Client = async () => {
+        try {
+            const response = await axios.post('http://localhost:3000/new-client', newClient.value,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${myStore.getToken()}`
+                    }
+                }
+            );
+            popupAddClient.value.hide();
+            get_rows('');
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    const displayPopupAddClient = () => {
+
+        newClient.value.nom = '';
+        newClient.value.prenom = '';
+        newClient.value.adresse = '';
+        newClient.value.cp = '';
+        newClient.value.ville = '';
+        newClient.value.email = '';
+        newClient.value.telephone = '';
+        newClient.value.password = '';
+
+        popupAddClient.value = new Modal(document.getElementById("popupAddClient"));
+        popupAddClient.value.show();
+    }
+
+    const edit_client= async (id)=>{
+        
+        const response = await axios.post('http://localhost:3000/get-client', { id: id },
+            {
+                headers: {
+                    'Authorization': `Bearer ${myStore.getToken()}`
+                }
+            }
+        );
+        updateClient.value = response.data;
+        popupEditClient.value=new Modal(document.getElementById("popupEditClient"));
+        popupEditClient.value.show();
+
+    }
+
+    const valid_update_client= async ()=>{
+        
+        
+        try {
+            const response = await axios.post('http://localhost:3000/update-client', updateClient.value,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${myStore.getToken()}`
+                    }
+                }
+            );
+            popupEditClient.value.hide();
+            get_rows('');
+        }
+        catch (error) {
+            console.error(error);
+        }
+
+    }
 
     const get_rows = async (q) => {
         try {

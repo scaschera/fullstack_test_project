@@ -150,7 +150,33 @@ app.post('/add-user', verifyTokenMiddleware, (req, res) => {
     })
 });
 
+app.post('/new-client', verifyTokenMiddleware, (req, res) => {
+    //Code pour créer un nouveau client
+    myClients.create({
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        adresse: req.body.adresse,
+        cp: req.body.cp,
+        ville: req.body.ville,
+        email: req.body.email,
+        telephone: req.body.telephone,
+        password: cryptMdp(req.body.password)
+    }).then((data) => {
 
+        //envoi du mail avec les informations de connexion
+        let from = 'noreply@localhost';
+        let to = req.body.email;
+        let subject = 'Vos identifiants de connexion';
+        let text = '';
+        let html = `<h4>Bonjour, voici vos informations de connexion :</h4>
+        <p>Email : ${req.body.email}</p>
+        <p>Mot de passe : ${req.body.password}</p>`;
+        sendEmail(from, to, subject, text, html);
+
+        res.json({ message: 'Client créé avec succès' });
+        return;
+    })
+});
 
 app.post('/delete-row', verifyTokenMiddleware, (req, res) => {
     //Code pour créer un nouvel article
@@ -225,6 +251,18 @@ app.post('/get-clients', verifyTokenMiddleware, (req, res) => {
 
 });
 
+app.post('/get-client', verifyTokenMiddleware, (req, res) => {
+    //Code pour rechercher un article
+    myClients.findOne({
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json(data);
+        return;
+    })
+});
+
 app.post('/update-user', verifyTokenMiddleware, (req, res) => {
     //Code pour modifier un utilisateur
     myUsers.update({
@@ -238,6 +276,31 @@ app.post('/update-user', verifyTokenMiddleware, (req, res) => {
         }
     }).then((data) => {
         myUsers.findOne({ where: { id: req.body.id } }).then((dataUser) => {
+            const { password, ...userWithoutPassword } = dataUser.dataValues; // Suppression du mot de passe
+            res.json(userWithoutPassword);
+            return;
+        })
+        return;
+    })
+
+});
+
+app.post('/update-client', verifyTokenMiddleware, (req, res) => {
+    //Code pour modifier un utilisateur
+    myClients.update({
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        adresse: req.body.adresse,
+        cp: req.body.cp,
+        ville: req.body.ville,
+        email: req.body.email,
+        telephone: req.body.telephone
+    }, {
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        myClients.findOne({ where: { id: req.body.id } }).then((dataUser) => {
             const { password, ...userWithoutPassword } = dataUser.dataValues; // Suppression du mot de passe
             res.json(userWithoutPassword);
             return;
