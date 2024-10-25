@@ -189,6 +189,17 @@ app.post('/delete-row', verifyTokenMiddleware, (req, res) => {
     })
 });
 
+app.post('/delete-client', verifyTokenMiddleware, (req, res) => {
+    //Code pour créer un nouvel article
+    myClients.destroy({
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Client supprimé avec succès' });
+    })
+});
+
 app.post('/get-rows', (req, res) => {
 
     myArticles.findAll({
@@ -313,6 +324,34 @@ app.post('/update-client', verifyTokenMiddleware, (req, res) => {
 app.post('/update-user-pwd', verifyTokenMiddleware, (req, res) => {
     //Code pour modifier un utilisateur
     myUsers.update({
+        password: cryptMdp(req.body.new_pwd)
+    }, {
+        where: {
+            id: req.body.id
+        }
+    }).then((data) => {
+        res.json({ message: 'Mot de passe mis à jour !' });
+
+        if (req.body.sendMailChangePwd) {
+            //envoi du mail avec les informations de connexion
+            let from = 'noreply@localhost';
+            let to = req.body.email;
+            let subject = 'Vos identifiants de connexion';
+            let text = '';
+            let html = `<h4>Bonjour, voici vos informations de connexion :</h4>
+            <p>Email : ${req.body.email}</p>
+            <p>Mot de passe : ${req.body.new_pwd}</p>`;
+            sendEmail(from, to, subject, text, html);
+        }
+
+        return;
+    })
+
+});
+
+app.post('/update-client-pwd', verifyTokenMiddleware, (req, res) => {
+    //Code pour modifier un utilisateur
+    myClients.update({
         password: cryptMdp(req.body.new_pwd)
     }, {
         where: {
