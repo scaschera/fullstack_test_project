@@ -44,14 +44,15 @@
             <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
           </div>
         </form>
-
+        
+        
       </div>
     </div>
   </nav>
 </template>
 <script setup>
 
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { RouterLink, useRouter } from 'vue-router'
 import { useStore } from '@/stores/store';
 
@@ -78,5 +79,6 @@ watch(() => useStore().user, (newVal, oldVal) => {
 watch(() => useStore().isLogin, (newVal, oldVal) => {
   isLogged.value = newVal;
 });
+
 
 </script>

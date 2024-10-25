@@ -4,6 +4,8 @@ import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import ClientsView from '../views/ClientsView.vue'
+import HomeView from '@/views/HomeView.vue'
+import CartView from '@/views/CartView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,7 +13,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: LoginView
+      component: HomeView
     },
     {
       path: '/articles',
@@ -39,6 +41,12 @@ const router = createRouter({
       path: '/clients',
       name: 'clients',
       component: ClientsView
+    }
+    ,
+    {
+      path: '/cart',
+      name: 'panier',
+      component: CartView
     }
   ]
 })
