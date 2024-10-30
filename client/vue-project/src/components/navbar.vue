@@ -1,4 +1,29 @@
 <template>
+
+  <!--------------contenu du panier (deb)-->
+  <div id="content_cart" class="d-none">
+    <div class="container">
+      <div class="row fluid">
+        <div class="col-12">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Livre 1 - 15 €&nbsp;<a href="#" class="float-end"><i class="fa-solid fa-trash"></i></a></li>
+            <li class="list-group-item">Livre 2 - 15 €&nbsp;<a href="#" class="float-end"><i class="fa-solid fa-trash"></i></a></li>
+            <li class="list-group-item"><span class="badge bg-secondary" style="font-size: 15px !important;">Total : 30 €</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <a href="#" class="btn btn-primary"><i class="fa-solid fa-bag-shopping"></i></a>
+        </div>
+        <div class="col-6">
+          <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--------------contenu du panier (fin)-->
+
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <RouterLink class="navbar-brand" :to="{ name: 'home' }">Hello world</RouterLink>
@@ -44,17 +69,23 @@
             <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
           </div>
         </form>
-        
-        
+        <div class="d-flex">
+          <div class="nav-link active" style="margin-right:10px;cursor: pointer;" data-bs-container="body"
+            data-bs-toggle="popover">
+            <i class="fas fa-shopping-cart nav-icon"></i>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
+
 </template>
 <script setup>
 
 import { onMounted, ref, watch } from 'vue';
 import { RouterLink, useRouter } from 'vue-router'
 import { useStore } from '@/stores/store';
+import { Popover } from 'bootstrap'
 
 const q = ref('');
 
@@ -80,5 +111,17 @@ watch(() => useStore().isLogin, (newVal, oldVal) => {
   isLogged.value = newVal;
 });
 
+onMounted(() => {
+  new Popover(document.body, {
+    selector: "[data-bs-toggle='popover']",
+    placement: 'bottom',
+    html: true,
+    trigger: 'click',
+    
+    content: () => {
+      return document.getElementById('content_cart').innerHTML
+    }
+  })
+});
 
 </script>
