@@ -45,8 +45,26 @@
 
     import { onMounted, ref } from 'vue';
     import axios from 'axios';
+    import { useStore } from '@/stores/store';
 
     const articles = ref([]);
+
+    const add_to_cart = (id) => {
+        let myArticle={
+            id: id,
+            qte: 1,
+            title: '',
+            price: 0
+        }
+        myArticle.id = id;
+        myArticle.qte = 1;
+        myArticle.title = articles.value.find(article => article.id == id).title;
+        myArticle.price = articles.value.find(article => article.id == id).price;
+
+        useStore().addToCart(myArticle);
+
+        console.log(article);
+    };
 
     const getArticles = () => {
         axios.post('http://localhost:3000/get-rows', { q: '' })

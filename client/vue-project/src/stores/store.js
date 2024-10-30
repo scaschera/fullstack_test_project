@@ -13,6 +13,8 @@ export const useStore = defineStore('myStore', () => {
         token: ''
     })
 
+    const cart = ref([]);
+
     const router = useRouter();
     const isLogin = ref(false);
     const articlesearch = ref('')
@@ -32,6 +34,61 @@ export const useStore = defineStore('myStore', () => {
         }
         isLogin.value = false;
         router.push({ name: 'login' });
+    }
+
+    function getTotalCart() {
+        let total = 0;
+
+        cart.value.forEach(element => {
+            total += element.price * element.qte;
+        });
+
+        return total;
+    }
+
+    function addToCart(article) {
+        let articleInCart = false;
+        cart.value.forEach(element => {
+            if (element.id == article.id) {
+                element.qte++;
+                articleInCart = true;
+            }
+        });
+        if (!articleInCart) {
+            article.qte = 1;
+            cart.value.push(article);
+        }
+    }
+
+    function removeFromCart(id) {
+        let articleInCart = false;
+        cart.value.forEach(element => {
+            if (element.id == id) {
+                if (element.qte > 1) {
+                    element.qte--;
+                } else {
+                    articleInCart = true;
+                }
+            }
+        });
+        if (articleInCart) {
+            cart.value = cart.value.filter(element => element.id != id);
+        }
+        console.log(cart.value);
+    }
+
+    function getCart() {
+        return cart.value;
+    }
+
+    function getCartLength() {
+
+        let qte = 0;
+
+        cart.value.forEach(element => {
+            qte += element.qte
+        })
+        return qte;
     }
 
     function login(userRecup) {
@@ -70,5 +127,22 @@ export const useStore = defineStore('myStore', () => {
         return user.value;
     }
 
-    return { articlesearch, searchArticle, user, logout, login, setToken, isLogin, getToken, getUser, setUser }
+    return {
+        articlesearch,
+        searchArticle,
+        user,
+        logout,
+        login,
+        setToken,
+        isLogin,
+        getToken,
+        getUser,
+        setUser,
+        cart,
+        getTotalCart,
+        getCart,
+        addToCart,
+        removeFromCart,
+        getCartLength
+    }
 })

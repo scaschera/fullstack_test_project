@@ -6,18 +6,21 @@
       <div class="row fluid">
         <div class="col-12">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">Livre 1 - 15 €&nbsp;<a href="#" class="float-end"><i class="fa-solid fa-trash"></i></a></li>
-            <li class="list-group-item">Livre 2 - 15 €&nbsp;<a href="#" class="float-end"><i class="fa-solid fa-trash"></i></a></li>
-            <li class="list-group-item"><span class="badge bg-secondary" style="font-size: 15px !important;">Total : 30 €</span></li>
+            <template v-if="useStore().getCart().length>0">
+              <li class="list-group-item" v-for="row in useStore().getCart()" :key="row.id">
+                {{ row.qte }} x {{ row.title }} - {{ row.price }} €
+              </li>
+            </template>
+            <template v-else>
+              <li class="list-group-item text-center">Panier vide</li>
+            </template>
+            <li class="list-group-item text-center"><span class="badge bg-secondary" >Total : {{useStore().getTotalCart()}} €</span></li>
           </ul>
         </div>
       </div>
-      <div class="row">
-        <div class="col-6">
-          <a href="#" class="btn btn-primary"><i class="fa-solid fa-bag-shopping"></i></a>
-        </div>
-        <div class="col-6">
-          <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+      <div class="row" v-if="useStore().getCart().length>0">
+        <div class="col-12 text-center">
+          <RouterLink class="btn btn-primary btn-sm" aria-current="page" :to="{ name: 'panier' }"><i class="fa-solid fa-bag-shopping"></i>&nbsp;Commander</RouterLink>
         </div>
       </div>
     </div>
@@ -72,7 +75,10 @@
         <div class="d-flex">
           <div class="nav-link active" style="margin-right:10px;cursor: pointer;" data-bs-container="body"
             data-bs-toggle="popover">
-            <i class="fas fa-shopping-cart nav-icon"></i>
+            <i class="fas fa-shopping-cart nav-icon" style="margin-right:5px"></i>
+            <span class="badge bg-secondary" v-if="useStore().getCartLength()>0"
+              style="margin-right:10px">{{ useStore().getCartLength() }}</span>
+            <i class="fa-solid fa-caret-down" style="color:red"></i>
           </div>
         </div>
       </div>
@@ -101,6 +107,11 @@ const isLogged = ref(false);
 const search_article = () => {
   useStore().searchArticle(q.value);
   router.push({ name: 'articles' });
+}
+
+const removeArticleInCart = (id) => {
+  alert(id);
+  //useStore().removeFromCart(id);
 }
 
 watch(() => useStore().user, (newVal, oldVal) => {
