@@ -220,6 +220,32 @@ app.post('/get-rows', (req, res) => {
 
 });
 
+app.post('/get-bons-reduction', (req, res) => {
+
+    myBonsReduction.findAll({
+        order: [
+            ['code', 'ASC']
+        ]
+    }).then((data) => {
+        res.json(data);
+        return;
+    })
+});
+
+app.post('/add-bon-reduction', (req, res) => {
+
+    myBonsReduction.create({
+        code: req.body.code,
+        description: req.body.description,
+        reduction: req.body.reduction,
+        type: req.body.type,
+        is_active: req.body.is_active
+    }).then((data) => {
+        res.json({ message: 'Bons de reduction ajouté avec succès' });
+        return;
+    })
+});
+
 app.post('/get-users', verifyTokenMiddleware, (req, res) => {
 
     myUsers.findAll({

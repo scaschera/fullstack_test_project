@@ -145,10 +145,10 @@
           </thead>
           <tbody>
             <tr v-for="row in list_rows" :key="row.id">
-              <th scope="row" valign="middle">{{ row.id }}</th>
-              <th scope="row" valign="middle">
+              <td scope="row" valign="middle">{{ row.id }}</td>
+              <td scope="row" valign="middle">
                 <img :src="row.url_img ? row.url_img : '/src/assets/img/placeholder.jpg'" class="img-fluid" alt="image">
-              </th>
+              </td>
               <td valign="middle">{{ row.title }}</td>
               <td valign="middle">{{ row.content }}</td>
               <td valign="middle">{{ row.price }} €</td>
