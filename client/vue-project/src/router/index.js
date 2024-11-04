@@ -6,6 +6,7 @@ import ProfileView from '../views/ProfileView.vue'
 import ClientsView from '../views/ClientsView.vue'
 import HomeView from '@/views/HomeView.vue'
 import CartView from '@/views/CartView.vue'
+import BonReductionView from '@/views/BonReductionView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,12 @@ const router = createRouter({
       path: '/cart',
       name: 'panier',
       component: CartView
+    }
+    ,
+    {
+      path: '/GestionBonReduction',
+      name: 'GestionBonReduction',
+      component: BonReductionView
     }
   ]
 })

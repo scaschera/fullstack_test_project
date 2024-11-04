@@ -186,11 +186,11 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center mt-2">
+            <div class="col-12 text-center mt-5">
                 <h1>Gestion des clients</h1>
             </div>
         </div>
-        <div class="row mt-2">
+        <div class="row mt-3">
             <div class="col-12">
                 <table class="table table-striped table-hover">
                     <thead>

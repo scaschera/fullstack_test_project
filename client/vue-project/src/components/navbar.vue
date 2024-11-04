@@ -42,6 +42,9 @@
           <li class="nav-item" v-if="useStore().isLogin && useStore().user.droit != 'client'">
             <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'clients' }">Clients</RouterLink>
           </li>
+          <li class="nav-item" v-if="useStore().isLogin && useStore().user.droit != 'client'">
+            <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'GestionBonReduction' }">Bons de réduction</RouterLink>
+          </li>
           <li class="nav-item" v-if="useStore().isLogin && useStore().user.droit == 'admin'">
             <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'users' }">Utilisateurs</RouterLink>
           </li>
@@ -65,7 +68,7 @@
           <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'login' }" style="margin-right:10px">Se
             connecter</RouterLink>
         </template>
-        <form class="d-flex" v-if="useStore().isLogin">
+        <form class="d-flex" style="margin-right:10px" v-if="useStore().isLogin">
           <div class="input-group mb-1 mt-1">
             <input class="form-control" type="search" v-model="q" @keyup="search_article"
               placeholder="Rechercher un article" aria-label="Search">
