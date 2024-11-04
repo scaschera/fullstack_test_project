@@ -54,16 +54,16 @@
             id: id,
             qte: 1,
             title: '',
-            price: 0
+            price: 0,
+            url_img: ''
         }
         myArticle.id = id;
         myArticle.qte = 1;
         myArticle.title = articles.value.find(article => article.id == id).title;
         myArticle.price = articles.value.find(article => article.id == id).price;
+        myArticle.url_img = articles.value.find(article => article.id == id).url_img;
 
         useStore().addToCart(myArticle);
-
-        console.log(article);
     };
 
     const getArticles = () => {

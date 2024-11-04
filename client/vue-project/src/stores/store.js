@@ -14,6 +14,8 @@ export const useStore = defineStore('myStore', () => {
     })
 
     const cart = ref([]);
+    const cartDelivery = ref(5);
+    const cartReductionAmount = ref(0);
 
     const router = useRouter();
     const isLogin = ref(false);
@@ -43,7 +45,16 @@ export const useStore = defineStore('myStore', () => {
             total += element.price * element.qte;
         });
 
+        total = Math.round(total * 100) / 100
         return total;
+    }
+
+    function getTotalCartBeforeBuy() {
+        let total = getTotalCart();
+        total = Math.round(total * 100) / 100
+
+        total = (total - Number.parseFloat(cartReductionAmount.value)) + Number.parseFloat(cartDelivery.value);
+        return Math.round(total * 100) / 100;
     }
 
     function addToCart(article) {
@@ -61,20 +72,7 @@ export const useStore = defineStore('myStore', () => {
     }
 
     function removeFromCart(id) {
-        let articleInCart = false;
-        cart.value.forEach(element => {
-            if (element.id == id) {
-                if (element.qte > 1) {
-                    element.qte--;
-                } else {
-                    articleInCart = true;
-                }
-            }
-        });
-        if (articleInCart) {
-            cart.value = cart.value.filter(element => element.id != id);
-        }
-        console.log(cart.value);
+        cart.value = cart.value.filter(element => element.id != id);
     }
 
     function getCart() {
@@ -127,6 +125,8 @@ export const useStore = defineStore('myStore', () => {
         return user.value;
     }
 
+
+
     return {
         articlesearch,
         searchArticle,
@@ -143,6 +143,11 @@ export const useStore = defineStore('myStore', () => {
         getCart,
         addToCart,
         removeFromCart,
-        getCartLength
+        getCartLength,
+        cartDelivery,
+        getTotalCartBeforeBuy
     }
-})
+}, {
+    persist: true
+}
+)
